@@ -37,6 +37,9 @@ def create_contour_plot(svm,X,y, kernel='Linear'):
     X1, X2 = np.meshgrid(np.linspace(x_min,x_max,50), np.linspace(y_min,y_max,50))
     X = np.array([[x1, x2] for x1, x2 in zip(np.ravel(X1), np.ravel(X2))])
     Z = svm.decision_function(X).reshape(X1.shape)
+    
+    fig = plt.gcf()
+    fig.set_size_inches((10,7))
    
     
     plt.scatter(train_set[:,0], train_set[:,1], c=y, cmap='winter')
@@ -87,7 +90,7 @@ X,y = generate_test_data(std=0.3)
 svm = support_vector_machine.SupportVectorMachine()
 svm.fit(X,y)
 create_contour_plot(svm,X,y)
-       
+'''    
 #Non-linearly separable demonstration
 X,y = generate_test_data(std=0.98)
 svm = support_vector_machine.SupportVectorMachine(C=1.5)
@@ -146,7 +149,7 @@ plane = ax.plot_surface(X1,X2,z(X1,X2), cmap='winter')
 
 #ani = animation.FuncAnimation(fig, update, range(185,340), interval=50, blit=False)
 #ani.save('matplot003.gif', writer='imagemagick')
-
+'''
 
 
 
