@@ -18,7 +18,7 @@ class LinearRegression(object):
     Attributes:
         eta (float): The learning rate of the model
         n_iters (int): Number of epochs performed when training model.
-        weights (np.ndarray): Model coefficients.
+        weights (numpy.ndarray): Model coefficients.
     '''
     
     def __init__(self, eta, n_iters):
