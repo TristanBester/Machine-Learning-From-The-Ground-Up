@@ -146,35 +146,3 @@ def create_training_plot(X, y, training_data, x_label=None, y_label=None, headin
 
 # Display training plot
 create_training_plot(X_anim, y_anim, linear_train_partial, 'X','y','Linear Regression', 'Linear_Regression.png')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
