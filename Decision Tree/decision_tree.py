@@ -105,7 +105,6 @@ class Tree(object):
         #print(subtree.decision, end = ' ')
         print(subtree.decision, end = ' ')
         if subtree.decision is not None:
-            
             self.decisions.append(subtree.decision)
         if subtree.right is not None:
             self.__traverse(subtree.right)
@@ -136,7 +135,9 @@ y = data[1]
 
 tree = Tree()
 tree.fit(X,y)
+tree.traverse()
 
+print(tree.decisions)
 # print(tree.root.classes)
 # print(tree.root.left.classes)
 # print(tree.root.right.classes)
@@ -162,12 +163,21 @@ print(np.sum(preds - y))
 
 plt.scatter(X[:,0], X[:, 1], c=y, cmap='winter')
 
-# for i in tree.decisions:
-#     if i[1] == 1:
-#         plt.axhline(y=i[0])
-#     else:
-#         plt.axvline(x=i[0])
+my_map = plt.cm.cool
+# sm = plt.cm.ScalarMappable(cmap=my_map,norm=plt.Normalize(0,len(tree.decisions)))
 
+
+colours = [my_map(i) for i in np.linspace(0,1,len(tree.decisions))]
+
+for i,x in enumerate(tree.decisions):
+    if x[1] == 1:
+        plt.axhline(y=x[0], color=colours[i], label=i)
+    else:
+        plt.axvline(x=x[0], color=colours[i], label=i)
+
+# fig = plt.gcf()
+# fig.colorbar(sm)
+plt.legend()
 
 
 
