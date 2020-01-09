@@ -1,6 +1,9 @@
 from sklearn.datasets import make_blobs
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.patches import Polygon
+from matplotlib.collections import PatchCollection
+
 
 
 class Node(object):
@@ -126,58 +129,209 @@ class Tree(object):
     def predict(self, val):
         return self.__predict(self.root,val)
         
- 
-  
-data = make_blobs(n_samples=10, n_features=2, centers=2, cluster_std=5, 
+
+data = make_blobs(n_samples=50, n_features=2, centers=2, cluster_std=5, 
                   random_state=0)
 X = data[0]
-y = data[1]    
+y = data[1]   
+
+train_set = X.copy() 
+labels = y.copy()
+
+X_one_min = X[:,0].min() * 1.1
+X_one_max = X[:,0].max() * 1.1
+X_two_min = X[:,1].min() * 1.1
+X_two_max = X[:,1].max() * 1.1
 
 tree = Tree()
 tree.fit(X,y)
-tree.traverse()
-
-print(tree.decisions)
-# print(tree.root.classes)
-# print(tree.root.left.classes)
-# print(tree.root.right.classes)
-# print(tree.root.left.left.classes)
-# print(tree.root.left.right.classes)
-# print(tree.root.left.right.left.classes)
-# print(tree.root.left.right.right.classes)
 
 
+X1, X2 = np.meshgrid(np.linspace(X_one_min, X_one_max, 500), np.linspace(X_two_min, X_two_max,500))
+X = [[x1,x2] for x1,x2 in zip(X1.flatten(),X2.flatten())]
+y = lambda x: tree.predict(x)
+Y = []
+for x in X:
+    Y.append(y(x))
+
+Y = np.array(Y)
+Y = Y.reshape(X1.shape)
+
+fig = plt.gcf()
+fig.set_size_inches((10,7))
+
+
+cp1 = plt.contourf(X1, X2, Y, [-1,0, 1], cmap='winter')
+plt.scatter(train_set[:,0], train_set[:,1], c=labels, cmap='winter', edgecolors='black')
+#plt.scatter(X1, X2, c=Y, s=0.1)
+
+    
+plt.xlabel('Feature one (Dimension one)')
+plt.ylabel('Feature two (Dimension two)')
+plt.title(f'Decision boundary of a decision tree with no regularization:')
+plt.show()
+
+plt.show()
 
 
 
 
-#tree.traverse()
-
-#print(tree.decisions)
-
-preds = []
-
-for i,x in zip(X,y):
-    preds.append(tree.predict(i))
-print(np.sum(preds - y))
-
-plt.scatter(X[:,0], X[:, 1], c=y, cmap='winter')
-
-my_map = plt.cm.cool
-# sm = plt.cm.ScalarMappable(cmap=my_map,norm=plt.Normalize(0,len(tree.decisions)))
 
 
-colours = [my_map(i) for i in np.linspace(0,1,len(tree.decisions))]
 
-for i,x in enumerate(tree.decisions):
-    if x[1] == 1:
-        plt.axhline(y=x[0], color=colours[i], label=i)
-    else:
-        plt.axvline(x=x[0], color=colours[i], label=i)
 
-# fig = plt.gcf()
-# fig.colorbar(sm)
-plt.legend()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# fig,ax = plt.subplots()
+
+# ax.set_xlim(left=X_one_min, right=X_one_max)
+# ax.set_ylim(bottom=X_two_min, top=X_two_max)
+
+# tree = Tree()
+# tree.fit(X,y)
+# tree.traverse()
+
+# ax.scatter(X[:,0], X[:, 1], c=y, cmap='winter')
+
+# patches = []
+
+# for x in tree.decisions:
+#     if x[1] == 1: #hor line
+#         print('ji')
+#         x1 = X_one_min
+#         x2 = X_one_max
+#         if abs(x[0] - X_two_min) > abs(x[0]- X_two_max):
+#             y1 = X_two_max
+#         else:
+#             y1 = X_two_min
+
+#         y2 = x[0]
+        
+#         polygon = Polygon([(x1,y1), (x1,y2), (x2,y2), (x2,y1)])
+#         patches.append(polygon)
+#     else: #vert line
+#         print('ji')
+#         y1 = X_two_min
+#         y1 = X_two_max
+#         if abs(x[0] - X_one_min) > abs(x[0]- X_one_max):
+#             x1 = X_one_max
+#         else:
+#             x1 = X_one_min
+
+#         x2 = x[0]
+        
+#         polygon = Polygon([(x1,y1), (x1,y2), (x2,y2), (x2,y1)])
+#         patches.append(polygon)
+  
+# p = PatchCollection(patches, cmap=plt.cm.jet, alpha=0.4)
+# colors = 100*np.random.rand(len(patches))
+# p.set_array(np.array(colors))
+
+# ax.add_collection(p)
+
+# plt.show()
+
+
+
+
+# itemindex = np.where(X[:,1] == tree.decisions[0][0])
+# print('Index: ', itemindex)
+# point  = X[itemindex]
+# print(point)
+
+    
+    
+
+
+
+# fig,ax = plt.subplots()
+
+# ax.scatter(X[:,0], X[:, 1], c=y, cmap='winter')
+
+# pos = X[y==1]
+# neg = X[y==0]
+
+# patches = []
+
+# polygon = Polygon(pos, True)
+# patches.append(polygon)
+# polygon = Polygon(neg, True)
+# patches.append(polygon)
+
+# p = PatchCollection(patches, cmap=plt.cm.jet, alpha=0.4)
+# colors = 100*np.random.rand(len(patches))
+# p.set_array(np.array(colors))
+
+# ax.add_collection(p)
+
+# plt.show()
+
+
+
+
+
+
+
+
+
+# tree = Tree()
+# tree.fit(X,y)
+# tree.traverse()
+
+# print(tree.decisions)
+# # print(tree.root.classes)
+# # print(tree.root.left.classes)
+# # print(tree.root.right.classes)
+# # print(tree.root.left.left.classes)
+# # print(tree.root.left.right.classes)
+# # print(tree.root.left.right.left.classes)
+# # print(tree.root.left.right.right.classes)
+
+
+# #tree.traverse()
+
+# #print(tree.decisions)
+
+# preds = []
+
+# for i,x in zip(X,y):
+#     preds.append(tree.predict(i))
+# print(np.sum(preds - y))
+
+# plt.scatter(X[:,0], X[:, 1], c=y, cmap='winter')
+
+# my_map = plt.cm.cool
+# # sm = plt.cm.ScalarMappable(cmap=my_map,norm=plt.Normalize(0,len(tree.decisions)))
+
+
+# colours = [my_map(i) for i in np.linspace(0,1,len(tree.decisions))]
+
+# for i,x in enumerate(tree.decisions):
+#     if x[1] == 1:
+#         plt.axhline(y=x[0], color=colours[i], label=i)
+#     else:
+#         plt.axvline(x=x[0], color=colours[i], label=i)
+
+# # fig = plt.gcf()
+# # fig.colorbar(sm)
+# plt.legend()
 
 
 
