@@ -1,53 +1,53 @@
-# Created by Tristan Bester
+# Created by Tristan Bester.
 import numpy as np
 
 class Node(object):
     '''
     Objects of this class serve as single nodes in the decision trees created by
-    the Tree class defined below. The objects function to store the necessary 
+    the classes defined below. The objects function to store the necessary 
     information required by a node in a decision tree.
     
     Args:
-        gini (float): The Gini impurity of the node.
-        decision (tuple): Stores the feature and threshold used for the decision
-                          at the node. Format: (threshold, feature index).
-        classes (numpy.ndarray): The number of samples in each class for the instances
-                                 to which the node applies.
+        decision (tuple): Stores the feature index and threshold value used for 
+                          the decision at the node. Format: (threshold, feature index).
+        prediction (float): The predicted class for the samples at this node
+                            in the case of classification. The predicted target
+                            value in the case of regression.
     
     Attributes:
-        gini (float): The Gini impurity of the node.
         decision (tuple): The information used to make the decision at the node.
-        classes (numpy.ndarray): The number of samples in each class for the instances
-                                 to which the node applies.
-        prediction (int): The predicted class for all of the instances to which 
-                          the node applies.
+        prediction (float): The predicted class/target value for 
+                            samples at this node.
         left (Node): The left child node of the current node.
         right (Node): The right child node of the current node.
     '''
-    def __init__(self, gini, decision, classes):
-        self.gini = gini
+    def __init__(self, decision, prediction):
         self.decision = decision
-        self.classes = classes
-        self.prediction = np.argmax(classes)
+        self.prediction = prediction
         self.left = None
         self.right = None
-        
+
 
 
 class Tree(object):
     '''
-    A decision tree is a tree-like model in which instances are classified based
-    on a series of attribute tests. Each instance moves from the root node, down 
-    the decision tree, until it reaches a leaf node at which point the instance
-    is classified. The path the instance follows to reach a leaf node is determined
-    based on the reesult of a set a predetermined attribute tests.
+    This class is the super class for the DecisionTreeClassifier class and the 
+    DecisionTreeRegressor class.
     
     Args:
-        None.
+        max_depth (int): The maximum depth of the decision tree that can be created.
+        min_samples_split: (int): The minimum number of samples required at a node
+                                  for the samples to be split into smaller subsets.
+        min_samples_leaf: (int): The minimum number of samples required to be at 
+                                 each leaf node.
     
     Attributes:
         root (Node): The root node of the decision tree.
-        decisions (list): A list storing all of the decision used
+        max_depth (int): The maximum depth of the decision tree that can be created.
+        min_samples_split: (int): The minimum number of samples required at a node
+                                  for the samples to be split into smaller subsets.
+        min_samples_leaf: (int): The minimum number of samples required to be at 
+                                 each leaf node.
     '''
     def __init__(self, max_depth=np.inf, min_samples_split=2, min_samples_leaf=1):
         self.root = None
@@ -66,18 +66,18 @@ class Tree(object):
             self.min_samples_leaf = min_samples_leaf
         else:
             raise AttributeError('Invalid min_samples_leaf value, min_samples_leaf must be greater than zero.')
-        
-        
+    
+    
     def split(self, split_val, split_col, X, y):
-        '''Split the given dataset based on the given feature and threshold value.'''
+        '''Split the given dataset based on the given feature index and threshold value.'''
         lower = []
         y_lower = []
         upper = []
         y_upper = []
         
-        # Split the data at the based on the specified feature and threshold value.
-        for i,x in enumerate(X[:,split_col]):
-            if x < split_val:
+        # Split the data at the based on the specified feature index and threshold value.
+        for i,x in enumerate(X[:, split_col]):
+            if x <= split_val:
                 lower.append(X[i])
                 y_lower.append(y[i])
             else:
@@ -91,9 +91,66 @@ class Tree(object):
         y_lower = np.array(y_lower).astype(int)
         y_upper = np.array(y_upper).astype(int)
         
-        return lower, y_lower, upper, y_upper   
+        return lower, y_lower, upper, y_upper
+     
+
+    def __predict(self, subtree, val):
+        '''Predict the class/target value of an instance.'''
+        if val.ndim == 0:
+            val = np.array([val])
+            
+        if subtree.decision is None:
+            return subtree.prediction
+        elif val[subtree.decision[1]] <= subtree.decision[0]:
+            return self.__predict(subtree.left, val)
+        else:
+            return self.__predict(subtree.right, val)
     
+        
+    def predict(self, val):
+        '''Predict the class/target value of an instance.'''
+        if self.root is None:
+            raise AttributeError('Model not fitted, call \'fit\' with appropriate arguments before using model.')
+        else:
+            return self.__predict(self.root, val)
+                 
+            
+                  
+class DecisionTreeClassifier(Tree):
+    '''
+    A decision tree classifier is a tree-like model in which instances are classified based
+    on a series of attribute tests. Each instance moves from the root node, down 
+    the decision tree, until it reaches a leaf node at which point the instance
+    is classified. The path the instance follows to reach a leaf node is determined
+    based on the result of a set of predetermined attribute tests.
     
+    Args:
+        criterion (str): The metric used to determine the split points in the decision tree.
+        max_depth (int): The maximum depth of the decision tree that can be created.
+        min_samples_split: (int): The minimum number of samples required at a node
+                                  for the samples to be split into smaller subsets.
+        min_samples_leaf: (int): The minimum number of samples required to be at 
+                                 each leaf node.
+    
+    Attributes:
+        root (Node): The root node of the decision tree.
+        criterion (str): The metric used to determine the split points in the decision tree.
+        max_depth (int): The maximum depth of the decision tree that can be created.
+        min_samples_split: (int): The minimum number of samples required at a node
+                                  for the samples to be split into smaller subsets.
+        min_samples_leaf: (int): The minimum number of samples required to be at 
+                                 each leaf node.
+    '''
+    def __init__(self,  criterion='gini',  max_depth=np.inf, min_samples_split=2, min_samples_leaf=1):
+        
+        super().__init__(max_depth, min_samples_split, min_samples_leaf)
+        
+        if criterion == 'gini' or criterion == 'entropy':
+            self.criterion = criterion
+        else:
+            raise AttributeError('Invalid criterion, Gini impurity and Entropy available.')
+      
+        
     def gini_impurity(self,y):
         '''Calculate the Gini impurity of the specified node.'''
         ratio = np.bincount(y)
@@ -102,433 +159,224 @@ class Tree(object):
         for i in ratio:
             gini -= (i/total)**2
         return gini
-    
-    
-    def CART(self, X,y):
-        '''CART algorithm for classification.'''
-        m,n = X.shape
-        splits = X.ravel(order='C')
-        min_cost = np.inf
-        ginis = []
+      
         
-        # Testing all possible split points.
-        for i,x in enumerate(splits):
-            lower, y_lower, upper, y_upper = self.split(x, (i % 2), X, y)
+    def entropy(self, y):
+        '''Calculate the entropy of the specified node.'''
+        _, counts = np.unique(y, return_counts=True)
+        
+        n = float(sum(counts))
+        summation = 0
+        
+        for i in counts:
+            summation += -1 * (i/n) * np.log2(i/n)
+        
+        return summation
+    
+    
+    def information_gain(self, y_left, y_right, y_parent):
+        '''Calculate the information gain from the specified split.'''
+        n = float(y_parent.shape[0])
+        entropy_left = self.entropy(y_left)
+        entropy_right = self.entropy(y_right)
+        entropy_parent = self.entropy(y_parent)
+        
+        
+        weighted_entropy = (((y_left.shape[0]/n) * entropy_left) +
+                           ((y_right.shape[0]/n) * entropy_right))
+                          
+        info_gain = entropy_parent - weighted_entropy 
+        return info_gain      
             
+
+    def calculate_improvement(self,y_lower, y_upper, y):
+        '''
+        Calculate the appropriate CART cost function value based on the criterion
+        being used in the model.
+        '''
+        if self.criterion == 'gini':
             gini_left = self.gini_impurity(y_lower) 
             gini_right = self.gini_impurity(y_upper)
-            
-            
-            gini_left *= (len(lower) / m)
-            gini_right *= (len(upper) / m)
+            gini_left *= (len(y_lower) / len(y))
+            gini_right *= (len(y_upper) / len(y))
             cost = gini_left + gini_right
-            
-            ginis.append((gini_left + gini_right, (x, (i % 2))))
-            # Store split that results in lowest value for CART cost function
-            # for classification.
-            if cost < min_cost:
-                min_cost = cost
-                best_split = (x, (i % 2))
-        
-        # Return the node that best classifies the given data set.
-        return Node(min_cost, best_split, np.bincount(y))
-        
-
-    def __fit(self, subtree, X, y, classes, curr_depth):
-        '''
-        If the dataset does not already have a Gini impurity of zero, create and
-        add a node to the decision tree that better classfies the instances in
-        the given dataset. The recursively call the _fit method to create the 
-        child nodes.
-        '''
-        if curr_depth > self.max_depth or len(X) < self.min_samples_split or len(X) < self.min_samples_leaf or self.gini_impurity(y) == 0: 
-            return Node(0, None, np.bincount(y))
+            return cost
         else:
-            subtree = self.CART(X,y)
-            lower, y_lower, upper, y_upper = self.split(subtree.decision[0], 
-                                                        subtree.decision[1], X, y)
+            gain = self.information_gain(y_lower, y_upper, y)
+            return gain
+        
+  
+    def CART(self, X, y):
+        '''The CART algorithm for building decision trees for classification.'''
+        n = X.shape[1]
+        splits = X.ravel(order='C')
+        
+        if self.criterion == 'gini':
+            best = np.inf
+        else:
+            best  = -1
+        
+        # Test all possible split points and store the optimal split point.
+        for i,x in enumerate(splits):
+            lower, y_lower, upper, y_upper = self.split(x, (i % n), X, y)
             
-            subtree.left = self.__fit(subtree.left, lower, y_lower, subtree.classes, curr_depth + 1)
-            subtree.right = self.__fit(subtree.right, upper, y_upper, subtree.classes, curr_depth + 1)
+            # Skip futile splits.
+            if len(lower) == 0 or len(upper) == 0:
+                continue
+            
+            val = self.calculate_improvement(y_lower, y_upper, y)
+            
+            if self.criterion == 'gini' and val < best:
+                left = np.c_[lower,y_lower]
+                right = np.c_[upper, y_upper]
+                best = val
+                # Split val and split col.
+                best_split = (x, (i%n))
+            elif val > best:
+                left = np.c_[lower,y_lower]
+                right = np.c_[upper, y_upper]
+                best = val
+                # Split val and split col.
+                best_split = (x, (i%n))
+             
+        return left, right, best_split      
+    
+    
+    def __fit(self, subtree, X, y, curr_depth):
+        '''
+        If the dataset does not already have an impurity value of zero and the 
+        regularization parameters have not been satisfied, create and add a node 
+        to the decision tree that better classifies the instances in the given 
+        dataset. Then recursively call the __fit method to create the child nodes.
+        '''
+        classes = np.bincount(y)
+        
+        if self.criterion == 'gini':
+            impurity = self.gini_impurity(y)
+        else:
+            impurity = self.entropy(y)
+        
+        if (
+                curr_depth > self.max_depth or 
+                len(X) < self.min_samples_split or 
+                len(X) < self.min_samples_leaf or
+                impurity == 0
+            ):
+            return Node(None, np.argmax(classes))
+        else:
+            (left, right, best_split) = self.CART(X,y)
+            subtree = Node(best_split, np.argmax(classes))
+            subtree.left = self.__fit(subtree.left, left[:,:-1], left[:, -1].astype(int), curr_depth + 1)
+            subtree.right = self.__fit(subtree.right, right[:,:-1], right[:, -1].astype(int), curr_depth + 1)
             return subtree
-        
-        
-        
+            
+            
     def fit(self,X,y):
         '''
         Build the decision tree by recursively calling the __fit method until
         all of the training instances have been correctly classified or the specified
-        regularization criteria have been satisified.
+        regularization criteria have been satisfied.
         '''
-        self.root = self.CART(X,y)
+        self.root = self.__fit(self.root, X, y, 1)
+
+
+
+class DecisionTreeRegressor(Tree):
+    '''
+    A decision tree regressor is a tree-like model in which the target value of 
+    instances is predicted based on a series of attribute tests. Each instance 
+    moves from the root node, down the decision tree, until it reaches a leaf 
+    node at which point the target value of the instance is predicted to be the
+    average target value of all of the instances at that node. The path the 
+    instance follows to reach a leaf node is determined based on the result of 
+    a set of predetermined attribute tests.
     
-        lower, y_lower, upper, y_upper = self.split(self.root.decision[0], 
-                                                    self.root.decision[1], X, y)
-        self.root.left = self.__fit(self.root.left, lower, y_lower, np.bincount(y_lower), 1)
-        self.root.right = self.__fit(self.root.right, upper, y_upper, np.bincount(y_upper), 1)
+    Args:
+        max_depth (int): The maximum depth of the decision tree that can be created.
+        min_samples_split: (int): The minimum number of samples required at a node
+                                  for the samples to be split into smaller subsets.
+        min_samples_leaf: (int): The minimum number of samples required to be at 
+                                 each leaf node.
+    
+    Attributes:
+        root (Node): The root node of the decision tree.
+        max_depth (int): The maximum depth of the decision tree that can be created.
+        min_samples_split: (int): The minimum number of samples required at a node
+                                  for the samples to be split into smaller subsets.
+        min_samples_leaf: (int): The minimum number of samples required to be at 
+                                 each leaf node.
+    '''
+    def MSE(self, y):
+        '''
+        Calculate the mean squared error from predicting the mean target value
+        of the instances at the node.
+        '''
+        y_hat = np.mean(y)
+        mse = ((y_hat - y)**2).sum()
+        return mse
+    
+    
+    def CART(self, X, y):
+        '''The CART algorithm for building decision trees for regression.'''
+        if X.ndim == 1:
+            X = X.reshape((-1,1))
         
+        n = X.shape[1]
+        splits = X.ravel(order='C')
+        best = np.inf
         
-    def __predict(self, subtree, val):
-        '''Predict the class of an instance.'''
-        if subtree.decision is None:
-            return subtree.prediction
-        elif val[subtree.decision[1]] < subtree.decision[0]:
-            return self.__predict(subtree.left, val)
+        # Test all possible split points and store the optimal split point.
+        for i,x in enumerate(splits):
+            lower, y_lower, upper, y_upper = self.split(x, (i % n), X, y)
+            
+            # Skip futile splits.
+            if len(lower) == 0 or len(upper) == 0:
+                continue
+            
+            mse_lower = self.MSE(y_lower)
+            mse_upper = self.MSE(y_upper)
+            m = float(y_lower.shape[0] + y_upper.shape[0])
+            cost = (len(y_lower)/m) * mse_lower + (len(y_upper)/m) * mse_upper
+            
+            if cost < best:
+                left = np.c_[lower,y_lower]
+                right = np.c_[upper, y_upper]
+                best = cost
+                # Split val and split col.
+                best_split = (x, (i%n))
+             
+        return left, right, best_split
+    
+    
+    def __fit(self, subtree, X, y, curr_depth):
+        '''
+        If the dataset does not already have a mean squared error of zero and the
+        regularization parameters have not been satisfied, create and add a node 
+        to the decision tree that predicts a more accurate target value for the 
+        instances in the given dataset. Then recursively call the __fit method to 
+        create the child nodes.
+        '''
+        prediction = np.mean(y)
+        
+        if (
+                curr_depth > self.max_depth or 
+                len(X) < self.min_samples_split or 
+                len(X) < self.min_samples_leaf or
+                self.MSE(y) == 0
+            ):
+            return Node(None, prediction)
         else:
-            return self.__predict(subtree.right, val)
-        
-    def predict(self, val):
-        '''Predict the class of an instnace.'''
-        #print(self.root.decision)
-        return self.__predict(self.root, val)
-        
-
-
-
-
-
-
-
-   
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    # def __traverse(self, subtree):
-    #     if subtree.left is not None:
-    #         self.__traverse(subtree.left)
-    #     if subtree.decision is not None:
-    #         self.decisions.append(subtree.decision)
-    #     if subtree.right is not None:
-    #         self.__traverse(subtree.right)
-           
-        
-    # def traverse(self):
-    #     self.decisions = []
-    #     self.__traverse(self.root)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# fig,ax = plt.subplots()
-
-# ax.set_xlim(left=X_one_min, right=X_one_max)
-# ax.set_ylim(bottom=X_two_min, top=X_two_max)
-
-# tree = Tree()
-# tree.fit(X,y)
-# tree.traverse()
-
-# ax.scatter(X[:,0], X[:, 1], c=y, cmap='winter')
-
-# patches = []
-
-# for x in tree.decisions:
-#     if x[1] == 1: #hor line
-#         print('ji')
-#         x1 = X_one_min
-#         x2 = X_one_max
-#         if abs(x[0] - X_two_min) > abs(x[0]- X_two_max):
-#             y1 = X_two_max
-#         else:
-#             y1 = X_two_min
-
-#         y2 = x[0]
-        
-#         polygon = Polygon([(x1,y1), (x1,y2), (x2,y2), (x2,y1)])
-#         patches.append(polygon)
-#     else: #vert line
-#         print('ji')
-#         y1 = X_two_min
-#         y1 = X_two_max
-#         if abs(x[0] - X_one_min) > abs(x[0]- X_one_max):
-#             x1 = X_one_max
-#         else:
-#             x1 = X_one_min
-
-#         x2 = x[0]
-        
-#         polygon = Polygon([(x1,y1), (x1,y2), (x2,y2), (x2,y1)])
-#         patches.append(polygon)
-  
-# p = PatchCollection(patches, cmap=plt.cm.jet, alpha=0.4)
-# colors = 100*np.random.rand(len(patches))
-# p.set_array(np.array(colors))
-
-# ax.add_collection(p)
-
-# plt.show()
-
-
-
-
-# itemindex = np.where(X[:,1] == tree.decisions[0][0])
-# print('Index: ', itemindex)
-# point  = X[itemindex]
-# print(point)
-
-    
-    
-
-
-
-# fig,ax = plt.subplots()
-
-# ax.scatter(X[:,0], X[:, 1], c=y, cmap='winter')
-
-# pos = X[y==1]
-# neg = X[y==0]
-
-# patches = []
-
-# polygon = Polygon(pos, True)
-# patches.append(polygon)
-# polygon = Polygon(neg, True)
-# patches.append(polygon)
-
-# p = PatchCollection(patches, cmap=plt.cm.jet, alpha=0.4)
-# colors = 100*np.random.rand(len(patches))
-# p.set_array(np.array(colors))
-
-# ax.add_collection(p)
-
-# plt.show()
-
-
-
-
-
-
-
-
-
-# tree = Tree()
-# tree.fit(X,y)
-# tree.traverse()
-
-# print(tree.decisions)
-# # print(tree.root.classes)
-# # print(tree.root.left.classes)
-# # print(tree.root.right.classes)
-# # print(tree.root.left.left.classes)
-# # print(tree.root.left.right.classes)
-# # print(tree.root.left.right.left.classes)
-# # print(tree.root.left.right.right.classes)
-
-
-# #tree.traverse()
-
-# #print(tree.decisions)
-
-# preds = []
-
-# for i,x in zip(X,y):
-#     preds.append(tree.predict(i))
-# print(np.sum(preds - y))
-
-# plt.scatter(X[:,0], X[:, 1], c=y, cmap='winter')
-
-# my_map = plt.cm.cool
-# # sm = plt.cm.ScalarMappable(cmap=my_map,norm=plt.Normalize(0,len(tree.decisions)))
-
-
-# colours = [my_map(i) for i in np.linspace(0,1,len(tree.decisions))]
-
-# for i,x in enumerate(tree.decisions):
-#     if x[1] == 1:
-#         plt.axhline(y=x[0], color=colours[i], label=i)
-#     else:
-#         plt.axvline(x=x[0], color=colours[i], label=i)
-
-# # fig = plt.gcf()
-# # fig.colorbar(sm)
-# plt.legend()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# def split(split_val, split_col):
-#     lower = []
-#     y_lower = []
-#     upper = []
-#     y_upper = []
-    
-#     #split
-#     for i,x in enumerate(X[:,split_col]):
-#         if x < split_val:
-#             lower.append(X[i])
-#             y_lower.append(y[i])
-#         else:
-#             upper.append(X[i])
-#             y_upper.append(y[i])
-#     return lower, y_lower, upper, y_upper
-        
-# def gini_impurity(y):
-#     ratio = np.bincount(y)
-#     total = ratio.sum()
-#     gini = 1
-#     for i in ratio:
-#         gini -= (i/total)**2
-#     return gini
-
-
-
-# # lower, y_lower, upper, y_upper = split(3, 1)
-# # print(gini_impurity(y))
-# # print(gini_impurity(y_lower))
-# # print(gini_impurity(y_upper))
-
-
-
-# m,n = X.shape
-# count = 0
-# splits = X.ravel(order='C')
-# test_val = 1
-
-# min_cost = 99
-
-# ginis = []
-
-# for i,x in enumerate(splits):
-#     lower, y_lower, upper, y_upper = split(x, (i % 2))
-    
-#     gini_left = gini_impurity(y_lower) 
-#     gini_right = gini_impurity(y_upper)
-    
-    
-#     gini_left *= (len(lower) / m)
-#     gini_right *= (len(upper) / m)
-#     cost = gini_left + gini_right
-#     ginis.append((gini_left + gini_right, (x, (i % 2))))
-#     if cost < min_cost:
-#         min_cost = cost
-#         best_split = (x, (i % 2))
-    
-# for i in ginis:
-#     print(i)
-# print(best_split)
-
-# # print(count)
-# # print(count % n)
-# # print(f'split val: {test_val}, col: {count % n}')
-# #plt.scatter(X[:,0], X[:,1], c=y, cmap='winter') 
-        
-        
-        
-        
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-        
+            (left, right, best_split) = self.CART(X,y)
+            subtree = Node(best_split, prediction)
+            subtree.left = self.__fit(subtree.left, left[:,:-1], left[:, -1].astype(int), curr_depth + 1)
+            subtree.right = self.__fit(subtree.right, right[:,:-1], right[:, -1].astype(int), curr_depth + 1)
+            return subtree
+            
+            
+    def fit(self,X,y):
+        '''
+        Build the decision tree by recursively calling the __fit method until the
+        correct target value has been predicted for all of the training instances 
+        or the specified regularization criteria have been satisfied.
+        '''
+        self.root = self.__fit(self.root, X, y, 1)
