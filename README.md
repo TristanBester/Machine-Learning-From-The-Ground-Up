@@ -10,6 +10,9 @@ The purpose of this project is to illustrate how some of the models used in supe
     * [Polynomial Regression Examples](#polynomial-regression-examples)
   + [Support Vector Machine](#support-vector-machine)
     * [Support Vector Machine Examples](#support-vector-machine-examples)
+  + [Decision Trees (Classification and Regression)](#decision-trees)
+    * [Classification Decision Tree Example](#classification-decision-tree-example)
+    * [Regression Decision Tree Example](#regression-decision-tree-example)
 
 ## Linear Regression and Regularization Techniques
 Linear regression fits a model with coefficients w = (w0,w1,...,wn) to minimise the mean squared error cost function between the observed targets in the dataset, and the targets predicted by the linear approximation. The linear model can be regularized with Ridge Regression, Lasso Regression and Elastic Net to decrease variance.
@@ -83,7 +86,26 @@ A support vector machine is a classifier that finds the hyperplane that best sep
   non-linearly separable data.
 </p>
 
+## Decision Trees
+A decision tree is a tree-like model in which the target value of instances is predicted based on a series of attribute tests. Each instance moves from the root node, down the decision tree, until it reaches a leaf node at which point the target value of the instance is predicted. The path the instance follows to reach a leaf node is determined based on the result of a set of predetermined attribute tests.
 
+### Classification Decision Tree Example
+<p align="center">
+    <img src="https://machinelearningjourney.com/wp-content/uploads/2020/01/Figure_1.png"\>
+</p>
+
+<p align="center">
+    Figure 1: A visualization of the decision boundary of a decision tree.
+</p>
+
+### Regression Decision Tree Example
+<p align="center">
+    <img src="https://machinelearningjourney.com/wp-content/uploads/2020/01/Figure.png"\>
+</p>
+
+<p align="center">
+    Figure 1: A visualization of the predictions of decision trees with various regularization parameters.
+</p>
 
 
 
