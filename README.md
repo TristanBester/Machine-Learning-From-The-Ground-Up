@@ -1,9 +1,9 @@
-# Supervised-Learning-Models-From-Scratch
+# Machine-Learning-From-The-Ground-Up
 ## Purpose
-The purpose of this project is to illustrate how some of the models used in supervised machine learning work. The implementations have been designed so as to facilitate understanding of the model and not in manner that prioritizes computational efficiency.
+The purpose of this project is to illustrate how some of the models used in machine learning work. The implementations have been designed so as to facilitate understanding of the model and not in manner that prioritizes computational efficiency.
 
 ## Table of contents
-- [Supervised-Learning-Models-From-Scratch]
+- [Machine-Learning-From-The-Ground-Up]
   + [Linear Regression and Regularization Techniques](#linear-regression-and-regularization-techniques)
     * [Linear Regression Examples](#linear-regression-examples)
   + [Polynomial Regression](#polynomial-regression)
