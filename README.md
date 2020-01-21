@@ -13,6 +13,11 @@ The purpose of this project is to illustrate how some of the models used in mach
   + [Decision Trees (Classification and Regression)](#decision-trees)
     * [Classification Decision Tree Example](#classification-decision-tree-example)
     * [Regression Decision Tree Example](#regression-decision-tree-example)
+  + [Ensemble Learning](#ensemble-learning)
+    * [Classification with Ensemble Models](#classification-with-ensemble-models)
+    * [Classification with Ensemble Models Example](#classification-with-ensemble-models-example)
+    * [Regression with Ensemble Models](#regression-with-ensemble-models)
+    * [Regression with Ensemble Models Example](#regression-with-ensemble-models-example)
 
 ## Linear Regression and Regularization Techniques
 Linear regression fits a model with coefficients w = (w0,w1,...,wn) to minimise the mean squared error cost function between the observed targets in the dataset, and the targets predicted by the linear approximation. The linear model can be regularized with Ridge Regression, Lasso Regression and Elastic Net to decrease variance.
@@ -106,6 +111,43 @@ A decision tree is a tree-like model in which the target value of instances is p
 <p align="center">
     Figure 1: A visualization of the predictions of decision trees with various regularization parameters.
 </p>
+
+## Ensemble Learning
+Ensemble models aggregate the predictions of multiple base estimators in order to make a final prediction. 
+This repository includes implementations of various ensemble models. Implemetations are listed below.
+
+### Classification with Ensemble Models
+Classification ensemble models make use of various strategies in order to effectively aggregate the predictions
+of multiple base estimators in order to make a final prediction. Classification ensemble models included:
+VotingClassifier, BaggingClassifier, RandomForestClassifier, ExtraTreesClassifier.
+
+### Classification with Ensemble Models Example
+<p align="center">
+    <img src="https://machinelearningjourney.com/wp-content/uploads/2020/01/collage-1.png"\>
+</p>
+
+<p align="center">
+    Figure 1: A visualization of the decision boundaries of various classification ensemble models
+    (VotingClassifier, BaggingClassifier, RandomForestClassifier, ExtraTreesClassifier).
+</p>
+
+### Regression with Ensemble Models
+Regression ensemble models make use of various strategies in order to effectively aggregate the predictions
+of multiple base estimators in order to make a final prediction. Regression ensemble models included:
+VotingRegressor, BaggingRegressor, RandomForestRegressor, ExtraTreesRegressor.
+
+### Regression with Ensemble Models Example
+<p align="center">
+    <img src="https://machinelearningjourney.com/wp-content/uploads/2020/01/collage2.png"\>
+</p>
+
+<p align="center">
+    Figure 1: A visualization of the predictions of various regression ensemble models
+    (VotingRegressor, BaggingRegressor, RandomForestRegressor, ExtraTreesRegressor).
+</p>
+
+
+
 
 
 
