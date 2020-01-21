@@ -1,5 +1,5 @@
 # Created by Tristan Bester.
-import decision_tree
+from mlgroundup.supervised import DecisionTreeRegressor
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -10,9 +10,9 @@ X = np.array(X)
 y = np.array(y)
 
 # Instantiate objects of the DecisionTreeRegressor class.
-tree_one = decision_tree.DecisionTreeRegressor()
-tree_two = decision_tree.DecisionTreeRegressor(max_depth=3)
-tree_three = decision_tree.DecisionTreeRegressor(min_samples_split=40)
+tree_one = DecisionTreeRegressor()
+tree_two = DecisionTreeRegressor(max_depth=3)
+tree_three = DecisionTreeRegressor(min_samples_split=40)
 
 # Fit each model to the training set.
 tree_one.fit(X,y)
@@ -20,15 +20,9 @@ tree_two.fit(X,y)
 tree_three.fit(X,y)
 
 # Get the predictions of each model.
-preds_one = []
-preds_two = []
-preds_three = []
-
-for i in X:
-    preds_one.append(tree_one.predict(i))
-    preds_two.append(tree_two.predict(i))
-    preds_three.append(tree_three.predict(i))
-
+preds_one = [tree_one.predict(i) for i in X]
+preds_two = [tree_two.predict(i) for i in X]
+preds_three = [tree_three.predict(i) for i in X]
 
 # Plot the predictions of each model on the same set of axes.
 fig = plt.gcf()

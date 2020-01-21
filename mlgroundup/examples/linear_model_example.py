@@ -1,5 +1,5 @@
 # Created by Tristan Bester
-import linear_model
+from mlgroundup.supervised import LinearRegression, RidgeRegression, LassoRegression
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
@@ -23,9 +23,9 @@ lasso_coef =[]
 
 # Get model coefficients at 10 stages during training (each 10% of total epochs).
 for i in range(0,1000,100):
-    lin_model = linear_model.LinearRegression(0.0001, i)
-    ridge_model = linear_model.RidgeRegression(0.01, i, 10)
-    lasso_model = linear_model.LassoRegression(0.01, i, 1)
+    lin_model = LinearRegression(0.0001, i)
+    ridge_model = RidgeRegression(0.01, i, 10)
+    lasso_model = LassoRegression(0.01, i, 1)
     
     lin_model.fit(X,y)
     ridge_model.fit(X,y)
@@ -63,7 +63,7 @@ X_anim = np.arange(30)
 X_anim  = X_anim .reshape(-1, 1)
 y_anim = np.array([2*i + 10 + np.random.sample() * 10 for i in X_anim])  
 
-lin_model = linear_model.LinearRegression(0.0001, 1000)
+lin_model = LinearRegression(0.0001, 1000)
 
 # Fit model for training plot
 linear_train_partial = lin_model.fit(X_anim, y_anim, True) 

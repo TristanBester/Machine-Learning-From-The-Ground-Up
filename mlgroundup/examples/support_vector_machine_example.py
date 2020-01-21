@@ -1,5 +1,5 @@
 # Created by Tristan Bester
-import support_vector_machine 
+from mlgroundup.supervised import SupportVectorMachine
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -97,7 +97,7 @@ with a linear kernel on linearly separable data.
 '''
 
 X,y = generate_test_data(std=0.3)
-svm = support_vector_machine.SupportVectorMachine(C=0)
+svm = SupportVectorMachine(C=0)
 svm.fit(X,y)
 create_contour_plot(svm,X,y)   
  
@@ -109,7 +109,7 @@ with a linear kernel on non-linearly separable data.
 '''
 
 X,y = generate_test_data(std=0.98)
-svm = support_vector_machine.SupportVectorMachine(C=1.5)
+svm = SupportVectorMachine(C=1.5)
 svm.fit(X,y)
 create_contour_plot(svm,X,y)
 
@@ -121,7 +121,7 @@ with a polynomial kernel on non-linearly separable data.
 '''
 
 X,y = generate_test_data(std=0.98)
-svm = support_vector_machine.SupportVectorMachine(kernel='polynomial', degree=3, C=1)
+svm = SupportVectorMachine(kernel='polynomial', degree=3, C=1)
 svm.fit(X,y)
 create_contour_plot(svm,X,y, 'Polynomial')
 
@@ -133,7 +133,7 @@ with a Radial Basis Function kernel on non-linearly separable data.
 '''
 
 X,y = generate_test_data(std=0.9)
-svm = support_vector_machine.SupportVectorMachine(kernel='rbf', gamma=1, C=4)
+svm = SupportVectorMachine(kernel='rbf', gamma=1, C=4)
 svm.fit(X,y)
 create_contour_plot(svm,X,y, 'Gaussian Radial Basis Function')
 create_filled_contour_plot(svm,X,y, 'Gaussian Radial Basis Function')
@@ -149,7 +149,7 @@ X,y = generate_test_data_3D(std=0.7)
 
 train_set = X.copy()
 
-svm = support_vector_machine.SupportVectorMachine()
+svm = SupportVectorMachine()
 svm.fit(X,y)
 
 fig = plt.figure()

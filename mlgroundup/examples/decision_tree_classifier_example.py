@@ -1,17 +1,17 @@
 # Created by Tristan Bester.
-import decision_tree
+from mlgroundup.supervised import DecisionTreeClassifier
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.datasets import make_blobs
 
 # Create the training set.
-data = make_blobs(n_samples=100, n_features=2, centers=3, cluster_std=5, 
+data = make_blobs(n_samples=100, n_features=2, centers=3, cluster_std=3, 
                   random_state=0)
 X = data[0]
 y = data[1]   
 
 # Instantiate an object of the DecisionTreeClassifier class.
-tree = decision_tree.DecisionTreeClassifier()
+tree = DecisionTreeClassifier()
 
 # Fit the model to the training set.
 tree.fit(X,y)
@@ -29,11 +29,7 @@ X_two_max = X[:,1].max()
 X1, X2 = np.meshgrid(np.linspace(X_one_min, X_one_max, 500), np.linspace(X_two_min, X_two_max,500))
 X = [[x1,x2] for x1,x2 in zip(X1.flatten(),X2.flatten())]
 y = lambda x: tree.predict(np.array(x))
-Y = []
-
-for x in X:
-    Y.append(y(x))
-
+Y = [y(x) for x in X]
 Y = np.array(Y)
 Y = Y.reshape(X1.shape)
 
@@ -48,5 +44,5 @@ plt.xlim(X_one_min, X_one_max)
 plt.ylim(X_two_min, X_two_max)  
 plt.xlabel('Feature one (Dimension one)')
 plt.ylabel('Feature two (Dimension two)')
-plt.title(f'Decision boundary of a decision tree with no regularization:')
+plt.title('Decision boundary of a decision tree with no regularization:')
 plt.show()

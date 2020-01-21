@@ -1,5 +1,4 @@
-import linear_model
-import polynomial_features
+from mlgroundup.supervised import LinearRegression, LassoRegression, PolynomialFeatures
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
@@ -46,12 +45,12 @@ X_multi = np.array([[1,1,1],[2,2,2],[3,3,3],[4,4,4],[5,5,5]])
 y_multi = np.array([1 + 1*i + 4*(i**2) + 4*j + 5 * (j**2) + k**2 + np.random.sample()*1 for i,j,k in X_multi])
 
 # Preprocess the training data to include polynomial features.
-poly = polynomial_features.PolynomialFeatures(degree=3)
+poly = PolynomialFeatures(degree=3)
 poly.fit()
 X_poly_multi = poly.transform(X_multi)
 
 # Create and train model.
-lasso_model = linear_model.LassoRegression(0.0000001, 50, 5)
+lasso_model = LassoRegression(0.0000001, 50, 5)
 train = lasso_model.fit(X_poly_multi, y_multi, True)
 
 create_training_plot(y_multi, train, x_label='X', y_label='y', heading='Polynomial Regression')
@@ -69,12 +68,12 @@ X = X.reshape(-1, 1)
 y = np.array([0.01*(i**3) + 3 + np.random.sample() * 3 for i in X])  
 
 # Preprocess the training data to include polynomial features.
-poly2 = polynomial_features.PolynomialFeatures(degree=3)
+poly2 = PolynomialFeatures(degree=3)
 poly2.fit()
 X_poly = poly2.transform(X)
 
 # Create and train the model.
-lin_model = linear_model.LinearRegression(0.000001, 10000)
+lin_model = LinearRegression(0.000001, 10000)
 train_linear_all = lin_model.fit(X_poly, y, True)
 
 def init():
