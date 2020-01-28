@@ -18,6 +18,12 @@ The purpose of this project is to illustrate how some of the models used in mach
     * [Classification with Ensemble Models Example](#classification-with-ensemble-models-example)
     * [Regression with Ensemble Models](#regression-with-ensemble-models)
     * [Regression with Ensemble Models Example](#regression-with-ensemble-models-example)
+  + [Boosting](#boosting)
+    * [AdaBoost](#adaboost)
+    * [AdaBoost Example](#adaboost-example)
+    * [Gradient Boosting](#gradient-boosting)
+    * [Gradient Boosting Classification Example](#gradient-boosting-classification-example)
+    * [Gradient Boosting Regression Example](#gradient-boosting-regression-example) 
 
 ## Linear Regression and Regularization Techniques
 Linear regression fits a model with coefficients w = (w0,w1,...,wn) to minimise the mean squared error cost function between the observed targets in the dataset, and the targets predicted by the linear approximation. The linear model can be regularized with Ridge Regression, Lasso Regression and Elastic Net to decrease variance.
@@ -145,6 +151,52 @@ VotingRegressor, BaggingRegressor, RandomForestRegressor, ExtraTreesRegressor.
     Figure 1: A visualization of the predictions of various regression ensemble models
     (VotingRegressor, BaggingRegressor, RandomForestRegressor, ExtraTreesRegressor).
 </p>
+
+
+## AdaBoost
+An AdaBoost classifier is a classifier that trains estimators sequentially.
+An initial estimator is fitted to the training set, the following estimator
+is then fitted to a training set that places more emphasis on the instances
+misclassified by the previous estimator. This process of fitting estimators
+to correct the misclassifications of the previous estimator is repeated until
+the ensemble contains the desired number of estimators.
+
+### AdaBoost Example
+<p align="center">
+    <img src="https://machinelearningjourney.com/wp-content/uploads/2020/01/Figure_1-1.png"\>
+</p>
+
+<p align="center">
+    Figure 1: A visualization of the accuracies of AdaBoost classifiers with varying number of estimators.
+</p>
+
+
+## Gradient Boosting
+A gradient boosting model is an ensemble model in which estimators are
+trained sequentially with each successive estimator trained to predict the 
+pseudo-residuals of all of the estimators trained prior to it. Once the model
+has been trained the predictions of all of the estimators in the ensemble
+are aggregated to predict the target value of an instance.
+
+### Gradient Boosting Classification Example
+<p align="center">
+    <img src="https://machinelearningjourney.com/wp-content/uploads/2020/01/Figure_2.png"\>
+</p>
+
+<p align="center">
+    Figure 1: The deviations of the predictions of gradient boosting classifiers with varying number 
+    of estimators from the target values.
+</p>
+
+### Gradient Boosting Regression Example
+<p align="center">
+    <img src="https://machinelearningjourney.com/wp-content/uploads/2020/01/Figure_3.png"\>
+</p>
+
+<p align="center">
+    Figure 1: A visualization of the predictions of gradient boosting regressors with varying number of estimators.
+</p>
+
 
 
 
