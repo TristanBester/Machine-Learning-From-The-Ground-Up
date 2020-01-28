@@ -45,18 +45,18 @@ class Tree(object):
     Args:
         splitter (str): The splitting method used by the decision tree.
         max_depth (int): The maximum depth of the decision tree that can be created.
-        min_samples_split: (int): The minimum number of samples required at a node
+        min_samples_split (int): The minimum number of samples required at a node
                                   for the samples to be split into smaller subsets.
-        min_samples_leaf: (int): The minimum number of samples required to be at
+        min_samples_leaf (int): The minimum number of samples required to be at
                                  each leaf node.
 
     Attributes:
         root (Node): The root node of the decision tree.
         splitter (str): The splitting method used by the decision tree.
         max_depth (int): The maximum depth of the decision tree that can be created.
-        min_samples_split: (int): The minimum number of samples required at a node
+        min_samples_split (int): The minimum number of samples required at a node
                                   for the samples to be split into smaller subsets.
-        min_samples_leaf: (int): The minimum number of samples required to be at
+        min_samples_leaf (int): The minimum number of samples required to be at
                                  each leaf node.
     '''
     def __init__(self, splitter='best', max_depth=np.inf, min_samples_split=2, min_samples_leaf=1):
@@ -112,6 +112,8 @@ class Tree(object):
         '''Return the class frequencies for instances associated with the node.'''
         if val.ndim == 0:
             val = np.array([val])
+            
+        #print(val)
 
         if subtree.decision is None:
             return subtree.classes
@@ -152,9 +154,9 @@ class DecisionTreeClassifier(Tree):
         criterion (str): The metric used to determine the split points in the decision tree.
         splitter (str): The splitting method used by the decision tree.
         max_depth (int): The maximum depth of the decision tree that can be created.
-        min_samples_split: (int): The minimum number of samples required at a node
+        min_samples_split (int): The minimum number of samples required at a node
                                   for the samples to be split into smaller subsets.
-        min_samples_leaf: (int): The minimum number of samples required to be at
+        min_samples_leaf (int): The minimum number of samples required to be at
                                  each leaf node.
 
     Attributes:
@@ -162,9 +164,9 @@ class DecisionTreeClassifier(Tree):
         criterion (str): The metric used to determine the split points in the decision tree.
         splitter (str): The splitting method used by the decision tree.
         max_depth (int): The maximum depth of the decision tree that can be created.
-        min_samples_split: (int): The minimum number of samples required at a node
+        min_samples_split (int): The minimum number of samples required at a node
                                   for the samples to be split into smaller subsets.
-        min_samples_leaf: (int): The minimum number of samples required to be at
+        min_samples_leaf (int): The minimum number of samples required to be at
                                  each leaf node.
     '''
     def __init__(self,  criterion='gini',  splitter='best', max_depth=np.inf, min_samples_split=2, min_samples_leaf=1):
@@ -179,7 +181,7 @@ class DecisionTreeClassifier(Tree):
 
     def gini_impurity(self,y):
         '''Calculate the Gini impurity of the specified node.'''
-        ratio = np.bincount(y)
+        ratio = np.bincount(y.astype(int))
         total = ratio.sum()
         gini = 1
         for i in ratio:
@@ -269,11 +271,11 @@ class DecisionTreeClassifier(Tree):
             best = np.inf
         else:
             best  = -1
-               
+            
         # Test possible split points and store the optimal split point.
         for i,x in zip(cols,splits):
-            lower, y_lower, upper, y_upper = self.split(x, i, X, y)
             
+            lower, y_lower, upper, y_upper = self.split(x, i, X, y)
             val = self.calculate_improvement(y_lower, y_upper, y)
 
             if self.criterion == 'gini' and val < best:
@@ -288,7 +290,7 @@ class DecisionTreeClassifier(Tree):
                 best = val
                 # Split val and split col.
                 best_split = (x, i)
-        
+                
         return left, right, best_split
 
 
@@ -299,7 +301,7 @@ class DecisionTreeClassifier(Tree):
         to the decision tree that better classifies the instances in the given
         dataset. Then recursively call the __fit method to create the child nodes.
         '''
-        classes = np.bincount(y)
+        classes = np.bincount(y.astype(int))
 
         if self.criterion == 'gini':
             impurity = self.gini_impurity(y)
@@ -343,19 +345,38 @@ class DecisionTreeRegressor(Tree):
 
     Args:
         max_depth (int): The maximum depth of the decision tree that can be created.
-        min_samples_split: (int): The minimum number of samples required at a node
+        min_samples_split (int): The minimum number of samples required at a node
                                   for the samples to be split into smaller subsets.
-        min_samples_leaf: (int): The minimum number of samples required to be at
+        min_samples_leaf (int): The minimum number of samples required to be at
                                  each leaf node.
 
     Attributes:
         root (Node): The root node of the decision tree.
         max_depth (int): The maximum depth of the decision tree that can be created.
-        min_samples_split: (int): The minimum number of samples required at a node
+        min_samples_split (int): The minimum number of samples required at a node
                                   for the samples to be split into smaller subsets.
-        min_samples_leaf: (int): The minimum number of samples required to be at
+        min_samples_leaf (int): The minimum number of samples required to be at
                                  each leaf node.
     '''
+    def __init__(self, max_depth=np.inf, min_samples_split=2, min_samples_leaf=1):
+        self.root = None
+            
+        if max_depth > 0:
+            self.max_depth = max_depth
+        else:
+            raise AttributeError('Invalid max_depth value, max_depth must be greater than zero.')
+
+        if min_samples_split > 1:
+            self.min_samples_split = min_samples_split
+        else:
+            raise AttributeError('Invalid min_samples_split value, min_samples_split must be greater than one.')
+
+        if min_samples_leaf > 0:
+            self.min_samples_leaf = min_samples_leaf
+        else:
+            raise AttributeError('Invalid min_samples_leaf value, min_samples_leaf must be greater than zero.')
+    
+    
     def MSE(self, y):
         '''
         Calculate the mean squared error from predicting the mean target value
