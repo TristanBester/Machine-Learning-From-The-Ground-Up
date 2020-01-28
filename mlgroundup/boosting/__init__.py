@@ -1,1 +1,2 @@
 from .adaboost import AdaBoost
+from .gradient_boosting import GradientBoostingRegressor, GradientBoostingClassifier
