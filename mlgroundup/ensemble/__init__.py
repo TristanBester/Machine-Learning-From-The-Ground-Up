@@ -1,3 +1,5 @@
-from .ensemble import (VotingClassifier, VotingRegressor, BaggingClassifier,
-                       BaggingRegressor, RandomForestClassifier, RandomForestRegressor,
-                       ExtraTreesClassifier, ExtraTreesRegressor)
+from .ensemble import (VotingClassifier, VotingRegressor,
+                       BaggingClassifier, BaggingRegressor,
+                       RandomForestClassifier, RandomForestRegressor,
+                       ExtraTreesClassifier, ExtraTreesRegressor,
+                       StackingClassifier, StackingRegressor)

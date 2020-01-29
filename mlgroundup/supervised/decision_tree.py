@@ -395,15 +395,18 @@ class DecisionTreeRegressor(Tree):
         n = X.shape[1]
         splits = X.ravel(order='C')
         best = np.inf
-
+        left = None
+        right = None
+        best_split = None
+        
         # Test all possible split points and store the optimal split point.
         for i,x in enumerate(splits):
             lower, y_lower, upper, y_upper = self.split(x, (i % n), X, y)
-
+            
             # Skip futile splits.
             if len(lower) == 0 or len(upper) == 0:
                 continue
-
+            
             mse_lower = self.MSE(y_lower)
             mse_upper = self.MSE(y_upper)
             m = float(y_lower.shape[0] + y_upper.shape[0])
@@ -415,7 +418,7 @@ class DecisionTreeRegressor(Tree):
                 best = cost
                 # Split val and split col.
                 best_split = (x, (i%n))
-
+            
         return left, right, best_split
 
 
@@ -433,15 +436,19 @@ class DecisionTreeRegressor(Tree):
                 curr_depth > self.max_depth or
                 len(X) < self.min_samples_split or
                 len(X) < self.min_samples_leaf or
-                self.MSE(y) == 0
+                self.MSE(y) == 0 #or
+                #(X == X).all()
             ):
             return Node(decision=None, prediction=prediction)
         else:
             (left, right, best_split) = self.CART(X,y)
             subtree = Node(decision=best_split, prediction=prediction)
-            subtree.left = self.__fit(subtree.left, left[:,:-1], left[:, -1].astype(int), curr_depth + 1)
-            subtree.right = self.__fit(subtree.right, right[:,:-1], right[:, -1].astype(int), curr_depth + 1)
-            return subtree
+            if left is None or right is None:
+                return subtree
+            else:
+                subtree.left = self.__fit(subtree.left, left[:,:-1], left[:, -1].astype(int), curr_depth + 1)
+                subtree.right = self.__fit(subtree.right, right[:,:-1], right[:, -1].astype(int), curr_depth + 1)
+                return subtree
 
 
     def fit(self,X,y):
@@ -457,7 +464,7 @@ class DecisionTreeRegressor(Tree):
         '''Predict the target value of an instance.'''
         if val.ndim == 0:
             val = np.array([val])
-
+    
         if subtree.decision is None:
             return subtree.prediction
         elif val[subtree.decision[1]] <= subtree.decision[0]:

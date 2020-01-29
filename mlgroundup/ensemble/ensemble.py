@@ -1,4 +1,5 @@
-from supervised import DecisionTreeClassifier, DecisionTreeRegressor
+from mlgroundup.supervised import DecisionTreeClassifier, DecisionTreeRegressor
+from mlgroundup.preprocess import train_test_split
 import numpy as np
           
 class VotingClassifier(object):
@@ -567,3 +568,101 @@ class ExtraTreesRegressor(Bagging):
             X = np.array([X])
         preds = np.array([estimator.predict(X) for estimator in self.estimators])
         return preds.mean()
+
+
+
+class Stacking(object):
+    '''
+    Super class for the StackingClassifier and StackingRegressor classes.
+    
+    Args:
+        estimators (list): A list storing the first layer estimators to be
+                           used in the ensemble.
+    
+    Attributes:
+        estimators (list): A list storing the first layer estimators
+                           used in the ensemble.
+        final_estimator (object): The blender/meta learner used in the
+                                  ensemble.
+    '''
+    def __init__(self, estimators):
+        self.estimators = estimators
+        
+        
+    def fit(self, X, y):
+        '''Fit the model to the training set.'''
+        base_set, hold_out, base_y, hold_y = train_test_split(X, y, test_size=0.3, random_state=42)        
+        
+        # Train the first layer estimators.
+        for estimator in self.estimators:
+            estimator.fit(base_set, base_y)
+        
+        # Create training set for the blender.
+        train_set = [self.estimators[0].predict(x) for x in hold_out]
+        for estimator in self.estimators[1:]:
+            preds = [estimator.predict(x) for x in hold_out]
+            train_set = np.c_[train_set, preds]
+        
+        # Train the blender.
+        self.final_estimator.fit(train_set, hold_y)
+        
+        
+    def predict(self, X):
+        '''Predict the target value of the given instance.'''
+        base_set = self.estimators[0].predict(X)
+        for estimator in self.estimators[1:]:
+            base_set = np.c_[base_set, estimator.predict(X)]
+        return self.final_estimator.predict(base_set[0])
+    
+    
+
+class StackingClassifier(Stacking):
+    '''
+    A StackingClassifier is an ensemble model in which the predictions of the
+    estimators in the ensemble are aggregated through the use of a final estimator,
+    the blender/meta learner.
+    
+    Args:
+        estimators (list): A list storing the first layer estimators to be
+                           used in the ensemble.
+        final_estimator (object): The blender/meta learner to be used in the
+                                  ensemble.
+    
+    Attributes:
+        estimators (list): A list storing the first layer estimators
+                           used in the ensemble.
+        final_estimator (object): The blender/meta learner used in the
+                                  ensemble.
+    '''
+    def __init__(self, estimators, final_estimator=None):
+        if final_estimator is not None:
+            self.final_estimator = final_estimator
+        else:
+            self.final_estimator = DecisionTreeClassifier()
+        super().__init__(estimators)
+        
+    
+
+class StackingRegressor(Stacking):
+    '''
+    A StackingRegressor is an ensemble model in which the predictions of the
+    estimators in the ensemble are aggregated through the use of a final estimator,
+    the blender/meta learner.
+    
+    Args:
+        estimators (list): A list storing the first layer estimators to be
+                           used in the ensemble.
+        final_estimator (object): The blender/meta learner to be used in the
+                                  ensemble.
+    
+    Attributes:
+        estimators (list): A list storing the first layer estimators
+                           used in the ensemble.
+        final_estimator (object): The blender/meta learner used in the ensemble.
+    '''    
+    def __init__(self, estimators, final_estimator=None):
+        if final_estimator is not None:
+            self.final_estimator = final_estimator
+        else:
+            self.final_estimator = DecisionTreeRegressor()
+        super().__init__(estimators)
