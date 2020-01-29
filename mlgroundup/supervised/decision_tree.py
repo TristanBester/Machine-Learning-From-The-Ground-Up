@@ -436,8 +436,7 @@ class DecisionTreeRegressor(Tree):
                 curr_depth > self.max_depth or
                 len(X) < self.min_samples_split or
                 len(X) < self.min_samples_leaf or
-                self.MSE(y) == 0 #or
-                #(X == X).all()
+                self.MSE(y) == 0
             ):
             return Node(decision=None, prediction=prediction)
         else:
