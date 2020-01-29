@@ -18,6 +18,8 @@ The purpose of this project is to illustrate how some of the models used in mach
     * [Classification with Ensemble Models Example](#classification-with-ensemble-models-example)
     * [Regression with Ensemble Models](#regression-with-ensemble-models)
     * [Regression with Ensemble Models Example](#regression-with-ensemble-models-example)
+  + [Stacking](#stacking)
+    * [Stacking Examples](#stacking-examples)
   + [Boosting](#boosting)
     * [AdaBoost](#adaboost)
     * [AdaBoost Example](#adaboost-example)
@@ -150,6 +152,20 @@ VotingRegressor, BaggingRegressor, RandomForestRegressor, ExtraTreesRegressor.
 <p align="center">
     Figure 1: A visualization of the predictions of various regression ensemble models
     (VotingRegressor, BaggingRegressor, RandomForestRegressor, ExtraTreesRegressor).
+</p>
+
+## Stacking
+A stacking model is an ensemble model in which the predictions of the
+estimators in the ensemble are aggregated through the use of a final estimator,
+the blender/meta learner.
+
+### Stacking Example
+<p align="center">
+    <img src="https://machinelearningjourney.com/wp-content/uploads/2020/01/coll.png"\>
+</p>
+
+<p align="center">
+    Figure 1: A visualization of the predictions of a StackingClassifier and StackingRegressor.
 </p>
 
 
