@@ -159,9 +159,9 @@ A stacking model is an ensemble model in which the predictions of the
 estimators in the ensemble are aggregated through the use of a final estimator,
 the blender/meta learner.
 
-### Stacking Example
+### Stacking Examples
 <p align="center">
-    <img src="https://machinelearningjourney.com/wp-content/uploads/2020/01/coll.png"\>
+    <img src="https://machinelearningjourney.com/wp-content/uploads/2020/01/coll.png" width="700" height="250"\>
 </p>
 
 <p align="center">
