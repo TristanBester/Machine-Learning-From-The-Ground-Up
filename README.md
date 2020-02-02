@@ -26,6 +26,18 @@ The purpose of this project is to illustrate how some of the models used in mach
     * [Gradient Boosting](#gradient-boosting)
     * [Gradient Boosting Classification Example](#gradient-boosting-classification-example)
     * [Gradient Boosting Regression Example](#gradient-boosting-regression-example) 
+  + [Dimensionality Reduction](#dimensionality-reduction)
+    * [Principal Component Analysis](#principal-component-analysis)
+    * [Principal Component Analysis Example](#principal-component-analysis-example)
+  + [Cluster Analysis](#cluster-analysis)
+    * [K-Means Clustering and K-Medians Clustering](#k-means-clustering-and-k-medians-clustering)
+    * [K-Means Clustering and K-Medians Clustering Example](#k-means-clustering-and-k-medians-clustering-example)
+  + [Instance-Based Learning](#instance-based-learning)
+    * [K-Nearest Neighbours](#k-nearest-neighbours)
+    * [K-Nearest Neighbours Example](#k-nearest-neighbours-example)
+    
+    
+    
 
 ## Linear Regression and Regularization Techniques
 Linear regression fits a model with coefficients w = (w0,w1,...,wn) to minimise the mean squared error cost function between the observed targets in the dataset, and the targets predicted by the linear approximation. The linear model can be regularized with Ridge Regression, Lasso Regression and Elastic Net to decrease variance.
@@ -212,6 +224,75 @@ are aggregated to predict the target value of an instance.
 <p align="center">
     Figure 1: A visualization of the predictions of gradient boosting regressors with varying number of estimators.
 </p>
+
+## Dimensionality Reduction
+Dimensionality reduction is the process of reducing the number of variables under consideration. This is done
+by calculating a set of principal variables.
+
+### Principal Component Analysis
+Principal Component Analysis is a dimensionality reduction technique. The axis
+(one-dimensional hyperplane) that accounts for the maximum variance of the 
+data is calculated then a second axis, orthogonal to the first, that accounts
+for the maximum remaining variance of the data is calculated. This process of
+repeatedly calculating the orthogonal axis that accounts for the largest
+amount of the remaining variance is repeated until an axis has been calculated
+for each dimension. These axes are the principal components of the data. The 
+data can then be projected onto the selected number of principal components, 
+with the data being projected onto the axes that account for more variance first.
+
+### Principal Component Analysis Example
+<p align="center">
+    <img src="https://machinelearningjourney.com/wp-content/uploads/2020/02/Figure_1.png"\>
+</p>
+
+<p align="center">
+    Figure 1: A visualization of the principal components of a three-dimensional dataset.
+</p>
+
+
+## Cluster Analysis
+The objective of clustering algorithms is to partition the given data into the selected number of
+groups such that the data points within each group are more similar to those within the same group
+than those of other groups.
+
+### K-Means Clustering and K-Medians Clustering
+K-means and K-medians are clustering algorithms that function to partition the given data
+into the specified number of clusters. Each instance is classified as belonging
+to the cluster with the nearest mean in the case of K-means or median in the case of K-medians.
+
+### K-Means Clustering and K-Medians Clustering Example
+<p align="center">
+    <img src="https://machinelearningjourney.com/wp-content/uploads/2020/02/BeFunky-collage.png"\>
+</p>
+
+<p align="center">
+    Figure 1: An illustration of the clusters formed by the K-means and K-medians algorithms.
+</p>
+
+## Instance-Based Learning
+Instance-based learning predicts the target value of new instances by comparing them to the instances seen
+during training, which have been stored in memory. This prediction strategy differs from that of other machine
+learning algorithms which make explicit generalizations based on the data seen during training.
+
+### K-Nearest Neighbours
+A K-nearest neighbours classifier/regressor makes predictions based on the target
+values of the k-nearest instances in the feature space. 
+
+### K-Nearest Neighbours Example
+<p align="center">
+    <img src="https://machinelearningjourney.com/wp-content/uploads/2020/02/BeFunky-collage-1.png"\>
+</p>
+
+<p align="center">
+    Figure 1: A visualization of the predictions of a K-nearest neighbours classifier and a K-nearest
+  neighbours regressor.
+</p>
+
+
+
+
+
+
 
 
 
