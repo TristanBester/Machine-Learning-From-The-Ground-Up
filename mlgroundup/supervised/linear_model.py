@@ -188,13 +188,22 @@ class LassoRegression(LinearRegression):
                 # gradient of cost function w.r.t. each weight
                 grads = np.multiply(instance, (2*(y_hat - target)))
                 
-                # calculate regularization term
-                signs = np.sign(self.weights)
-                # prevent bias(intercept) from being regularized
-                signs[0] = 1 
-                # add regularization term
-                grads += self.alpha * signs
                 
+                if 0 in self.weights:
+                    # calculate subgradient vector.
+                    signs = np.sign(self.weights)
+                    # prevent bias(intercept) from being regularized.
+                    signs[0] = 1 
+                    # add subgradient vector.
+                    grads += self.alpha * signs
+                else:
+                    # add partial derivative of regularization term.
+                    partials = (self.alpha * self.weights)/abs(self.weights)
+                    # prevent bias(intercept) term from being regularized.
+                    partials[0] = 1
+                    grads = grads + partials 
+                    
+    
                 # adjust weights to decrease cost
                 self.weights -= np.multiply(self.eta, grads)
                 
