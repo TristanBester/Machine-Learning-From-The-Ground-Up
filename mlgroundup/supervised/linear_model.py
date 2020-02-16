@@ -190,16 +190,16 @@ class LassoRegression(LinearRegression):
                 
                 
                 if 0 in self.weights:
-                    # calculate subgradient vector.
+                    # calculate subgradient vector
                     signs = np.sign(self.weights)
-                    # prevent bias(intercept) from being regularized.
+                    # prevent bias(intercept) from being regularized
                     signs[0] = 1 
-                    # add subgradient vector.
+                    # add subgradient vector
                     grads += self.alpha * signs
                 else:
-                    # add partial derivative of regularization term.
+                    # add partial derivative of regularization term
                     partials = (self.alpha * self.weights)/abs(self.weights)
-                    # prevent bias(intercept) term from being regularized.
+                    # prevent bias(intercept) term from being regularized
                     partials[0] = 1
                     grads = grads + partials 
                     
@@ -275,11 +275,21 @@ class ElasticNet(LinearRegression):
                 # prevent bias(intercept) from being regularized
                 ridge = np.insert(ridge,0,0)
                 # add regularization term
-
-                # calculate Lasso regularization term
-                lasso = np.sign(self.weights)
-                # prevent bias(intercept) from being regularized
-                lasso[0] = 1 
+                
+                # calcultae LASSO regularization term
+                if 0 in self.weights:
+                    # calculate subgradient vector
+                    signs = np.sign(self.weights)
+                    # prevent bias(intercept) from being regularized
+                    signs[0] = 1 
+                    # add subgradient vector
+                    lasso = signs
+                else:
+                    # add partial derivative of regularization term
+                    partials = (self.alpha * self.weights)/abs(self.weights)
+                    # prevent bias(intercept) term from being regularized
+                    partials[0] = 1
+                    lasso = partials
                 
                 #add regularization terms
                 grads += self.alpha * ((self.l1_ratio * lasso) + ((1 - self.l1_ratio) * ridge))
