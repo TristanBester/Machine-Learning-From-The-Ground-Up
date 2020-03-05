@@ -1,7 +1,5 @@
 # Created by Tristan Bester
 import numpy as np
-import matplotlib.pyplot as plt
-np.random.seed(42)
 
 
 #Superclass for  models.
@@ -346,14 +344,14 @@ class LogisticRegression(LinearRegression):
         self.init_weights(X)
         X = self.prepare_dataset(X)
         
-        # stochastic gradient descent
+        # Stochastic gradient descent
         for i in range(self.n_iters):
             for instance,target in zip(X,y):
                 # calculate model prediction
                 y_hat = np.dot(self.weights, instance)
                 y_hat = self.__sigmoid_function(y_hat)
                 # gradient of cost function w.r.t. each weight
-                grads = np.multiply(instance, (2*(y_hat - target)))
+                grads = np.multiply(instance, (y_hat - target))
                 
                 # adjust weights to decrease cost
                 self.weights -= np.multiply(self.eta, grads)
@@ -370,6 +368,3 @@ class LogisticRegression(LinearRegression):
                 return 1
         except AttributeError:
             print('Model not fitted, call \'fit\' with appropriate arguments before using model.')
-             
-            
-        
