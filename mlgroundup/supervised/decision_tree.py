@@ -112,8 +112,6 @@ class Tree(object):
         '''Return the class frequencies for instances associated with the node.'''
         if val.ndim == 0:
             val = np.array([val])
-            
-        #print(val)
 
         if subtree.decision is None:
             return subtree.classes
