@@ -24,7 +24,7 @@ X_two_min = X[:,1].min()
 X_two_max = X[:,1].max()
 
 # Calculate the decision boundary of the model.
-X1, X2 = np.meshgrid(np.linspace(X_one_min, X_one_max, 5), np.linspace(X_two_min, X_two_max,500))
+X1, X2 = np.meshgrid(np.linspace(X_one_min, X_one_max, 5), np.linspace(X_two_min, X_two_max,5))
 X = [[x1,x2] for x1,x2 in zip(X1.flatten(),X2.flatten())]
 y = lambda x: forest.predict(np.array(x))
 Y = [y(x) for x in X]
