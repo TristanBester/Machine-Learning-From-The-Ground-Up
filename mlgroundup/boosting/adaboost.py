@@ -1,5 +1,5 @@
 # Created by Tristan Bester.
-from mlgroundup.supervised import DecisionTreeClassifier, DecisionTreeRegressor
+from mlgroundup.supervised import DecisionTreeClassifier
 from sklearn.datasets import make_blobs
 import matplotlib.pyplot as plt
 import numpy as np
