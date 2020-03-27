@@ -1,5 +1,4 @@
 # Created by Tristan Bester.
-from mlgroundup.supervised import DecisionTreeRegressor
 import numpy as np
 
 
@@ -205,7 +204,8 @@ class GradientBoostingClassifier(object):
     trained sequentially with each successive estimator trained to predict the 
     pseudo-residuals of all of the estimators trained prior to it. Once the model
     has been trained the predictions of all of the estimators in the ensemble
-    are aggregated to predict the class of a given instance.
+    are aggregated to predict the class of a given instance. The estimators used
+    in this implementation are decision trees.
     
     Args:
         n_estimators (int): The number of estimators to be used in the ensemble.
