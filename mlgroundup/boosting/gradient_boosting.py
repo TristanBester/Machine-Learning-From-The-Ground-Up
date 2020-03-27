@@ -1,4 +1,5 @@
 # Created by Tristan Bester.
+from mlgroundup.supervised import DecisionTreeRegressor
 import numpy as np
 
 
