@@ -11,7 +11,7 @@ class MLP(object):
 	here: http://neuralnetworksanddeeplearning.com/chap2.html
 
 	This implementation has been altered to suit the article
-	available here: 
+	available here: https://machinelearningjourney.com/index.php/2020/07/18/perceptron/
 
  	Args:
     	sizes (list): A list specifying the number of neurons in each layer.
@@ -22,7 +22,7 @@ class MLP(object):
     	biases (list): A list storing the models biases.
     	num_layers (int): The number of layers in the network.
 	'''
-	def __init(self, sizes):
+	def __init__(self, sizes):
 		self.num_layers = len(sizes)
 		self.sizes = sizes
 		self.biases = [np.random.randn(i, 1) for i in sizes[1:]]
